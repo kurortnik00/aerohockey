@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "BodyBasics.h"
+//#include "BodyBasics.h"
 
 struct Paddle
 {
@@ -27,7 +27,7 @@ private:
 	unsigned score_;
 	float velocity_, vx_, vy_;
     sf::Keyboard::Key const up_, down_, left_, right_;
-	CBodyBasics kinectApplication;
+//	CBodyBasics kinectApplication;
 
 	enum {
 		SPINEBASE,

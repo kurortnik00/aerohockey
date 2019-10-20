@@ -11,8 +11,8 @@
 #include <Shlobj.h>
 
 // Kinect Header files
-#include <Kinect.h>
-#include <d2d1.h>
+//#include <Kinect.h>
+//#include <d2d1.h>
 
 class CBodyBasics
 {
@@ -112,7 +112,7 @@ private:
 	HRESULT EnsureDirect2DResources();
 
 	/// <summary>
-	/// Dispose Direct2d resources 
+	/// Dispose Direct2d resources
 	/// </summary>
 	void DiscardDirect2DResources();
 
@@ -126,7 +126,7 @@ private:
 	D2D1_POINT_2F           BodyToScreen(const CameraSpacePoint& bodyPoint, int width, int height);
 
 	/// <summary>
-	/// Draws a body 
+	/// Draws a body
 	/// </summary>
 	/// <param name="pJoints">joint data</param>
 	/// <param name="pJointPoints">joint positions converted to screen space</param>

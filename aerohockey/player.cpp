@@ -1,10 +1,10 @@
 #include <SFML/Graphics.hpp>
-#include <Kinect.h>
+//#include <Kinect.h>
 
 #include "player.hpp"
 
 
-Player::Player (float radius, sf::Color color, sf::Vector2f position, float velocity) 
+Player::Player (float radius, sf::Color color, sf::Vector2f position, float velocity)
       : radius_ (radius), color_ (color), position_ (position), velocity_ (sf::Vector2f(0.0, 0.0))
 {
     shape_.setRadius(radius_);
