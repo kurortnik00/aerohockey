@@ -1,5 +1,6 @@
-
+#include <iostream>
 #include <SFML/Graphics.hpp>
+
 #include "puck.hpp"
 
 Puck::Puck (float radius, sf::Color color, sf::Vector2f position, sf::Vector2f velocity) 
@@ -7,21 +8,25 @@ Puck::Puck (float radius, sf::Color color, sf::Vector2f position, sf::Vector2f v
 {
     shape_.setRadius(radius_);
     shape_.setFillColor(color_);
+	shape_.setOrigin(radius_, radius_);
     shape_.setPosition(position_);
 }
 
 
 void Puck::update (int width, int height, float delta)
 {
+	//std::cout << shape_.getPosition().x << " " << shape_.getPosition().y << "\n";
+	//std::cout << delta << " " << velocity_.x * delta << " " << velocity_.y * delta << "\n";
     shape_.move(velocity_ * delta);
-    position_ = shape_.getPosition();
-    walls_collide(width, height);
+	//std::cout << "Update (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
+	//std::cout << "Update collide (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
 }
 
 
-void Puck::reset(sf::Vector2f position)
+void Puck::reset(sf::Vector2f position, sf::Vector2f velocity)
 {
 	position_ = position;
+	velocity_ = velocity;
 	shape_.setPosition(position_);
 }
 
@@ -50,18 +55,22 @@ sf::Vector2f & Puck::velocity()
 }
 
 
-void Puck::walls_collide (int width, int height)
+void Puck::walls_collide (float width, float height)
 {
-    if ((position_.y <= 0) || (position_.y >= height - 2 * radius_))
+    if ((position_.y <= radius_) || (position_.y >= height - radius_))
     {
-        velocity_.y *= -1;
-        if (position_.y <= 0)
+		std::cout << "\nCollide with wall (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
+			
+		velocity_.y *= -1;
+        if (position_.y <= radius_)
         {
-            position_.y = 0.1f;
+            position_.y = radius_ + 1.f;
         }
         else
         {
-            position_.y = height - 2 * radius_ - 0.1f;
+            position_.y = height - radius_ - 1.f;
         }
+		shape_.setPosition(position_);
+		std::cout << "After wall collide (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
     }
 }

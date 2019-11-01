@@ -11,6 +11,7 @@ Paddle::Paddle (float radius, sf::Color color, sf::Vector2f position, float velo
     stop();
     shape_.setRadius(radius_);
     shape_.setFillColor(color_);
+	shape_.setOrigin(radius_, radius_);
     shape_.setPosition(position_);
 
 //	kinectApplication.Run();

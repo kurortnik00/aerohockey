@@ -20,7 +20,7 @@ private:
 	void update();
 
     int width_, height_;
-	bool score_changed;
+	bool score_changed, paused;
     sf::RenderWindow mWindow;
     Puck puck;
     Paddle left, right;

@@ -25,12 +25,12 @@ float dist2 (sf::Vector2f const & p1, sf::Vector2f const & p2)
 
 
 Game::Game(float width, float height)
-	: width_(width), height_(height), score_changed(false)
+	: width_(width), height_(height), score_changed(false), paused(false)
 	, mWindow(sf::VideoMode(width, height), "Aerohockey", sf::Style::None)
     , puck (height / 20, sf::Color::White, sf::Vector2f(width / 2, height / 2), sf::Vector2f(150.f, 200.f))
     , left (height / 20, sf::Color(204, 0, 0), sf::Vector2f(100, height / 2), 250.f, sf::Keyboard::W, sf::Keyboard::S, sf::Keyboard::A, sf::Keyboard::D)
 	, right (height / 20, sf::Color(0, 102, 0), sf::Vector2f(width - 100, height / 2), 250.f, sf::Keyboard::Up, sf::Keyboard::Down, sf::Keyboard::Left, sf::Keyboard::Right)
-	, board (&left, &right, 5)
+	, board (&left, &right, 1)
 { 
     mWindow.setFramerateLimit(60);
 	mWindow.setVerticalSyncEnabled(true);
@@ -42,6 +42,7 @@ Game::Game(float width, float height)
 	right_border.setPosition(798.f, 0.f);
 	right_border.setSize(sf::Vector2f(2.f, height_ - 60.f));
 	right_border.setFillColor(sf::Color(0, 102, 0));
+
 
 	left_border.setPosition(0.f, 0.f);
 	left_border.setSize(sf::Vector2f(800.f, 2.f));
@@ -64,17 +65,20 @@ void Game::run()
     while (mWindow.isOpen())
     {
         processEvents();
-        elapsed += clock.restart();
-        // cout << elapsed.asSeconds() << endl;
-        
-        while (elapsed > update_time)
-        {
-            processEvents();
-            update();
-            elapsed -= update_time;
-        }
-        
-        render();
+		if (!paused)
+		{
+			elapsed += clock.restart();
+			// cout << elapsed.asSeconds() << endl;
+
+			while (elapsed > update_time)
+			{
+				processEvents();
+				update();
+				elapsed -= update_time;
+			}
+
+			render();
+		}
     }
 }
 
@@ -92,7 +96,12 @@ void Game::processEvents()
         {
             if (event.key.code == sf::Keyboard::Escape)
             {
-                mWindow.close();
+				// Close only if paused
+				if (paused)
+				{
+					mWindow.close();
+				}
+				paused = true;
             }
         }    
     }
@@ -105,15 +114,17 @@ void Game::processEvents()
 void Game::update()
 {
 	float delta = update_time.asSeconds();
-    left.update(width_, height_, delta);
+	left.update(width_, height_, delta);
 	right.update(width_, height_, delta);
-    puck.update(width_, height_ - 60.f, delta);
+	puck.update(width_, height_ - 60.f, delta);
     collide_objects(left, puck, width_, height_, delta);
 	collide_objects(right, puck, width_, height_, delta);
+	puck.walls_collide(width_, height_ - 60.f);
+
 	score_changed = goal_scored();
 	board.update(delta, score_changed);
-    /*
-    for (int i = 0; i < 56; i++)
+    
+    /*for (int i = 0; i < 56; i++)
     {
 		float delta = update_time.asSeconds();
         balls[i]->update(width_, height_, delta);
@@ -121,8 +132,8 @@ void Game::update()
         {
             collide_objects(balls[i], balls[j], width_, height_, delta);
         }
-    }
-    */
+    }*/
+    
 }
 
 
@@ -135,12 +146,19 @@ void Game::collide_objects(Paddle & first, Puck & second, int width, int height,
        
     if (dist2(x1, x2) <= threshold)
     {
-        sf::Vector2f v1 = first.velocity(), v2 = second.velocity();     
+		sf::Vector2f v1 = first.velocity(), v2 = second.velocity();
+		/*std::cout << "\nCollision: \n"
+			<< "Paddle: (" << x1.x << ", " << x1.y << ") with (" << v1.x << ", " << v1.y << ") speed \n"
+			<< "Puck before: (" << x2.x << ", " << x2.y << ") with (" << v2.x << ", " << v2.y << ") speed \n";
+     */
+		first.velocity() = sf::Vector2f(0.f, 0.f);
         second.velocity() = v2 - (x2 - x1) * dot(v2 - v1, x2 - x1) / len2(x2 - x1);
-		while (dist2(first.position(), second.position()) <= threshold)
-		{
-			second.update(width, height, delta);
-		}
+		//std::cout << "Puck after: (" << x2.x << ", " << x2.y << ") with (" << second.velocity().x << ", " << second.velocity().y << ") speed \n";
+		//while (dist2(first.position(), second.position()) <= threshold)
+		//{
+			//second.update(width, height, delta);
+			//std::cout << "\nUpdate puck position (" << second.position().x << ", " << second.position().y << ")\n";
+		//}
     }
 }
 
@@ -166,17 +184,21 @@ void Game::collide_objects(Puck * first, Puck * second, int width, int height, f
 
 bool Game::goal_scored()
 {
+	sf::Vector2f velocity;
+
 	if ((puck.position().x < 0) || (puck.position().x > width_))
 	{
 		if (puck.position().x < 0)
 		{
 			right.scored();
+			velocity = sf::Vector2f(-150.f, 200.f);
 		}
 		else
 		{
 			left.scored();
+			velocity = sf::Vector2f(150.f, 200.f);
 		}
-		puck.reset(sf::Vector2f(width_ / 2, height_ / 2));
+		puck.reset(sf::Vector2f(width_ / 2, height_ / 2), velocity);
 		return true;
 	}
 	return false;
@@ -195,8 +217,8 @@ void Game::render()
 	mWindow.draw(right.shape());
     
 	board.render(mWindow);
-	/*
-    for (int i = 0; i < 56; i++)
+	
+    /*for (int i = 0; i < 56; i++)
     {
         mWindow.draw(balls[i]->shape());
     }*/

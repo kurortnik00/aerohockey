@@ -12,6 +12,7 @@ public:
 
 private:
 	std::string time_line(float seconds);
+	char t_[8];
 	Paddle * left_;
 	Paddle * right_;
 	sf::RectangleShape left_score_border, right_score_border, main_border;
