@@ -13,10 +13,17 @@ Puck::Puck (float radius, sf::Color color, sf::Vector2f position, sf::Vector2f v
 }
 
 
+void Puck::moveTo (sf::Vector2f position)
+{
+    position_ = position;
+    shape_.setPosition(position_);
+}
+
 void Puck::update (int width, int height, float delta)
 {
 	//std::cout << shape_.getPosition().x << " " << shape_.getPosition().y << "\n";
 	//std::cout << delta << " " << velocity_.x * delta << " " << velocity_.y * delta << "\n";
+    position_ += velocity_ * delta;
     shape_.move(velocity_ * delta);
 	//std::cout << "Update (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
 	//std::cout << "Update collide (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
@@ -25,9 +32,8 @@ void Puck::update (int width, int height, float delta)
 
 void Puck::reset(sf::Vector2f position, sf::Vector2f velocity)
 {
-	position_ = position;
+	moveTo(position);
 	velocity_ = velocity;
-	shape_.setPosition(position_);
 }
 
 

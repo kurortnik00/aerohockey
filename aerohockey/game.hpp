@@ -12,7 +12,7 @@ public:
     void run();
     
 private:
-    void collide_objects(Puck * first, Puck * second, int width, int height, float delta);
+    void collide_objects(Puck * first, Puck * second, int width, int height);
     void collide_objects(Paddle & first, Puck & second, int width, int height, float delta);
 	void processEvents();
     void render();

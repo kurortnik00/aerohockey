@@ -66,7 +66,7 @@ string Scoreboard::time_line(float seconds)
 {
 	int mins = (int) seconds / 60;
 	int secs = (int) seconds % 60;
-	sprintf_s(t_, "%02d:%02d", mins, secs);
+	sprintf(t_, "%02d:%02d", mins, secs);
 
 	return t_;
 }

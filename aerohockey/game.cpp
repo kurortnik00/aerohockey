@@ -1,27 +1,11 @@
+#include <cmath>
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
 #include "game.hpp"
+#include "util.hpp"
 
 using namespace std;
-
-
-float len2 (sf::Vector2f const v)
-{
-    return v.x * v.x + v.y * v.y;
-}
-
-
-float dot (sf::Vector2f const v1, sf::Vector2f const v2)
-{
-    return v1.x * v2.x + v1.y * v2.y;
-}
-
-
-float dist2 (sf::Vector2f const & p1, sf::Vector2f const & p2)
-{
-    return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
-}
 
 
 Game::Game(float width, float height)
@@ -43,18 +27,17 @@ Game::Game(float width, float height)
 	right_border.setSize(sf::Vector2f(2.f, height_ - 60.f));
 	right_border.setFillColor(sf::Color(0, 102, 0));
 
-
 	left_border.setPosition(0.f, 0.f);
 	left_border.setSize(sf::Vector2f(800.f, 2.f));
 	left_border.setFillColor(sf::Color::White);
 
-    balls = (Puck **) new Puck *[56];
-    for (int i = 0; i < 56; i++)
+    /*balls = (Puck **) new Puck *[5];
+    for (int i = 0; i < 5; i++)
     {
         balls[i] = new Puck(10.f, sf::Color::White, 
                             sf::Vector2f(100.f + 50.f * (i % 8), 100.f + 50.f * (i / 8)),
                             sf::Vector2f(150.f * (1 - 2 * (i % 2)), 200.f * (2 * (i % 2) - 1)));
-    }
+    }*/
 }
 
 
@@ -116,24 +99,23 @@ void Game::update()
 	float delta = update_time.asSeconds();
 	left.update(width_, height_, delta);
 	right.update(width_, height_, delta);
-	puck.update(width_, height_ - 60.f, delta);
+	puck.update(width_, height_, delta);
     collide_objects(left, puck, width_, height_, delta);
 	collide_objects(right, puck, width_, height_, delta);
-	puck.walls_collide(width_, height_ - 60.f);
+	puck.walls_collide(width_, height_);
 
 	score_changed = goal_scored();
 	board.update(delta, score_changed);
     
-    /*for (int i = 0; i < 56; i++)
+/*    for (int i = 0; i < 5; i++)
     {
-		float delta = update_time.asSeconds();
         balls[i]->update(width_, height_, delta);
-        for (int j = i + 1; j < 56; j++)
+        for (int j = i + 1; j < 5; j++)
         {
-            collide_objects(balls[i], balls[j], width_, height_, delta);
+            collide_objects(balls[i], balls[j], width_, height_);
         }
+		balls[i]->walls_collide(width_, height_);
     }*/
-    
 }
 
 
@@ -143,42 +125,64 @@ void Game::collide_objects(Paddle & first, Puck & second, int width, int height,
     float r2 = second.radius();
     float threshold = (r1 + r2) * (r1 + r2);
     sf::Vector2f x1 = first.position(), x2 = second.position();
-       
+    
+	float dist = dist2(x1, x2);
     if (dist2(x1, x2) <= threshold)
     {
 		sf::Vector2f v1 = first.velocity(), v2 = second.velocity();
+		float rewind_time = 0.f;
+		if (dist < threshold)
+		{
+			sf::Vector2f dv = v1 - v2;
+			rewind_time = (r1 + r2 - sqrt(dist)) / sqrt(len2(dv));
+			std::cout << r1 + r2 << " " << sqrt(dist) << " " << dv.x << " " << dv.y << " " << rewind_time << "\n";
+			// first.moveTo(x1 - rewind_time * v1);
+			second.moveTo(x2 - rewind_time * v2);
+		}
+
 		/*std::cout << "\nCollision: \n"
 			<< "Paddle: (" << x1.x << ", " << x1.y << ") with (" << v1.x << ", " << v1.y << ") speed \n"
 			<< "Puck before: (" << x2.x << ", " << x2.y << ") with (" << v2.x << ", " << v2.y << ") speed \n";
      */
-		first.velocity() = sf::Vector2f(0.f, 0.f);
+		sf::Vector2f x1 = first.position(), x2 = second.position();
+        first.velocity() = v1 - (x1 - x2) * dot(v1 - v2, x1 - x2) / len2(x1 - x2);
         second.velocity() = v2 - (x2 - x1) * dot(v2 - v1, x2 - x1) / len2(x2 - x1);
+
+		first.update(width, height, rewind_time);
+		second.update(width, height, rewind_time);
 		//std::cout << "Puck after: (" << x2.x << ", " << x2.y << ") with (" << second.velocity().x << ", " << second.velocity().y << ") speed \n";
-		//while (dist2(first.position(), second.position()) <= threshold)
-		//{
-			//second.update(width, height, delta);
-			//std::cout << "\nUpdate puck position (" << second.position().x << ", " << second.position().y << ")\n";
-		//}
     }
 }
 
 
-void Game::collide_objects(Puck * first, Puck * second, int width, int height, float delta)
+void Game::collide_objects(Puck * first, Puck * second, int width, int height)
 {
-    float threshold = (first->radius() + second->radius()) * (first->radius() + second->radius());
-    if (dist2(first->position(), second->position()) <= threshold)
+    float r1 = first->radius();
+    float r2 = second->radius();
+    float threshold = (r1 + r2) * (r1 + r2);
+	sf::Vector2f x1 = first->position(), x2 = second->position();
+
+	float dist = dist2(x1, x2);
+    if (dist <= threshold)
     {
-        sf::Vector2f v1 = first->velocity(), v2 = second->velocity();
-        sf::Vector2f x1 = first->position(), x2 = second->position();
+		sf::Vector2f v1 = first->velocity(), v2 = second->velocity();
+
+		float rewind_time = 0.f;
+		if (dist < threshold)
+		{
+			sf::Vector2f dv = v1 - v2;
+			rewind_time = (r1 + r2 - sqrt(dist)) / sqrt(len2(dv));
+			std::cout << r1 + r2 << " " << sqrt(dist) << " " << dv.x << " " << dv.y << " " << rewind_time << "\n";
+			first->moveTo(x1 - rewind_time * v1);
+			second->moveTo(x2 - rewind_time * v2);
+		}
         
+		sf::Vector2f x1 = first->position(), x2 = second->position();
         first->velocity() = v1 - (x1 - x2) * dot(v1 - v2, x1 - x2) / len2(x1 - x2);
         second->velocity() = v2 - (x2 - x1) * dot(v2 - v1, x2 - x1) / len2(x2 - x1);
 
-		while (dist2(first->position(), second->position()) <= threshold)
-		{
-			first->update(width, height, delta);
-			second->update(width, height, delta);
-		}
+		first->update(width, height, rewind_time);
+		second->update(width, height, rewind_time);
     }
 }
 
@@ -218,7 +222,7 @@ void Game::render()
     
 	board.render(mWindow);
 	
-    /*for (int i = 0; i < 56; i++)
+    /*for (int i = 0; i < 5; i++)
     {
         mWindow.draw(balls[i]->shape());
     }*/
