@@ -45,10 +45,15 @@ sf::Vector2f & Player::velocity()
 
 unsigned Player::score()
 {
-	return score_;
+    return score_;
 }
 
 void Player::scored()
 {
-	score_++;
+    score_++;
+}
+
+void Player::reset()
+{
+    score_ = 0;
 }

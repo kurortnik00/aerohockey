@@ -14,8 +14,9 @@ public:
     float radius();
     sf::Vector2f & position();
     sf::Vector2f & velocity();
-	unsigned score();
-	void scored();
+    unsigned score();
+    void scored();
+    void reset();
 
 private:
     void stop();
@@ -24,36 +25,36 @@ private:
     sf::Color color_;
     sf::Vector2f position_;
     sf::Vector2f current_velocity_;
-	unsigned score_;
-	float velocity_, vx_, vy_;
+    unsigned score_;
+    float velocity_, vx_, vy_;
     sf::Keyboard::Key const up_, down_, left_, right_;
-//	CBodyBasics kinectApplication;
+//    CBodyBasics kinectApplication;
 
-	enum {
-		SPINEBASE,
-		SPINEMID,
-		NECK,
-		HEAD,
-		SHOULDERLEFT,
-		ELBOWLEFT,
-		WRISTLEFT,
-		HANDLEFT,
-		SHOULDERRIGHT,
-		ELBOWRIGHT,
-		WRISTRIGHT,
-		HANDRIGHT,
-		HIPLEFT,
-		KNEELEFT,
-		ANKLELEFT,
-		FOOTLEFT,
-		HIPRIGHT,
-		KNEERIGHT,
-		ANKLERIGHT,
-		FOOTRIGHT,
-		SPINESHOULDER,
-		HANDTIPLEFT,
-		THUMBLEFT,
-		HANDTIPRIGHT,
-		THUMBRIGHT,
-	};
+    enum {
+        SPINEBASE,
+        SPINEMID,
+        NECK,
+        HEAD,
+        SHOULDERLEFT,
+        ELBOWLEFT,
+        WRISTLEFT,
+        HANDLEFT,
+        SHOULDERRIGHT,
+        ELBOWRIGHT,
+        WRISTRIGHT,
+        HANDRIGHT,
+        HIPLEFT,
+        KNEELEFT,
+        ANKLELEFT,
+        FOOTLEFT,
+        HIPRIGHT,
+        KNEERIGHT,
+        ANKLERIGHT,
+        FOOTRIGHT,
+        SPINESHOULDER,
+        HANDTIPLEFT,
+        THUMBLEFT,
+        HANDTIPRIGHT,
+        THUMBRIGHT,
+    };
 };

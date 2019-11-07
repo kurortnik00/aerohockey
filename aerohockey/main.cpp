@@ -1,11 +1,34 @@
+#include <iostream>
 #include <SFML/Main.hpp>
-#include "game.hpp"
+
+#include "objects/world.hpp"
+#include "states/state.hpp"
+#include "states/manager.hpp"
 
 
 int main()
 {
-    Game game(800.f, 600.f);
-    game.run();
+    World world(800.f, 600.f);
+    StateManager manager(States::Type::Preparation, world);
 
-	return EXIT_SUCCESS;
+    sf::Clock clock;
+    sf::Time elapsed = sf::Time::Zero;
+    sf::Time update_time = sf::seconds(1.f / 60.f);
+
+    while (world.mWindow.isOpen())
+    {
+        manager.processEvents();
+        elapsed += clock.restart();
+
+        while (elapsed > update_time)
+        {
+            manager.processEvents();
+            manager.update(update_time.asSeconds());
+            elapsed -= update_time;
+        }
+
+        manager.render();
+    }
+
+    return EXIT_SUCCESS;
 }

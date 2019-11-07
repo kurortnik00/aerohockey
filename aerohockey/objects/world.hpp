@@ -1,31 +1,30 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "board.hpp"
 #include "paddle.hpp"
 #include "puck.hpp"
-#include "board.hpp"
+#include "ready_button.hpp"
 
-struct Game
+struct World
 {
-public: 
-    Game(float width, float height);
-    void run();
-    
-private:
+public:
+    World(float width, float height);
+    void processEvents();
+
     void collide_objects(Puck * first, Puck * second, int width, int height);
     void collide_objects(Paddle & first, Puck & second, int width, int height, float delta);
-	void processEvents();
     void render();
-	bool goal_scored();
-	void update();
+    void reset();
+    bool goal_scored();
+    void update(const float delta);
 
     int width_, height_;
-	bool score_changed, paused;
+    bool score_changed, paused;
     sf::RenderWindow mWindow;
     Puck puck;
     Paddle left, right;
-	Scoreboard board;
-    Puck ** balls;
-	sf::RectangleShape left_border, top_border, right_border;
-    const sf::Time update_time = sf::seconds(1.f / 60.f);
+    Scoreboard board;
+    ReadyButton left_ready, right_ready;
+    sf::RectangleShape left_border, top_border, right_border;
 };
