@@ -9,7 +9,8 @@ public:
     Paddle(float radius, sf::Color color, sf::Vector2f position, float velocity,
            sf::Keyboard::Key up, sf::Keyboard::Key down, sf::Keyboard::Key left, sf::Keyboard::Key right);
     void update(int width, int height, float delta);
-    void handleInput();
+	void moveTo(sf::Vector2f position);
+	void handleInput();
     sf::CircleShape shape();
     float radius();
     sf::Vector2f & position();

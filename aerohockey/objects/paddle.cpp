@@ -69,10 +69,15 @@ void Paddle::update (int width, int height, float delta)
 //    HANDRIGHT_xy.x = ((1920 - HANDRIGHT_xy.x * 1920 / 640) - 510)*4.9 / 2.4; //translate to pixel
 //    HANDRIGHT_xy.y = (HANDRIGHT_xy.y * 1200 / 280 - 430) * 4 / 1.4;//same
 //
-//    if (HANDRIGHT_z > 1) shape_.setPosition(HANDRIGHT_xy);
+//    if (HANDRIGHT_z > 1) shape_.moveTo(HANDRIGHT_xy);
 //
 }
 
+void Paddle::moveTo(sf::Vector2f position)
+{
+	position_ = position;
+	shape_.move(position_);
+}
 
 sf::CircleShape Paddle::shape()
 {

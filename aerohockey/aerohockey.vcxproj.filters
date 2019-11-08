@@ -51,6 +51,9 @@
     <ClCompile Include="util.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="control\orbbec\astra\astra_wrapper.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="states\manager.hpp">
@@ -79,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="util.hpp">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="control\orbbec\astra\body_tracker.hpp">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="control\orbbec\astra\astra_wrapper.hpp">
+      <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

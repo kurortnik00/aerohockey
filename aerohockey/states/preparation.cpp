@@ -20,14 +20,10 @@ void StatePreparation::update(const float delta)
 
 void StatePreparation::render()
 {
-    world.mWindow.clear();
-
     world.mWindow.draw(world.left.shape());
     world.mWindow.draw(world.right.shape());
     world.mWindow.draw(world.left_ready.shape());
     world.mWindow.draw(world.right_ready.shape());
-
-    world.mWindow.display();
 }
 
 States::Type StatePreparation::switchTo()

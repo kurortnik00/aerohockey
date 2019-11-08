@@ -1,8 +1,9 @@
 #include <iostream>
 #include "manager.hpp"
+#include "../control/orbbec/astra/astra_wrapper.hpp"
 
-StateManager::StateManager(const States::Type& initial, World & world)
-    : current_state (initial), world (world)
+StateManager::StateManager(const States::Type& initial, World & world, AstraWrapper & wrapper)
+    : current_state (initial), world (world), astra_wrapper (wrapper)
 {
     registerState<StatePreparation>(States::Type::Preparation, world);
     registerState<StateGame>(States::Type::Game, world);
@@ -58,6 +59,7 @@ void StateManager::processEvents()
 void StateManager::update(const float delta)
 {
     State * current = container[current_state];
+	astra_wrapper.update();
     current->update(delta);
     // current->log();
 
@@ -70,5 +72,10 @@ void StateManager::update(const float delta)
 
 void StateManager::render()
 {
+	world.mWindow.clear(sf::Color::Black);
+
+	astra_wrapper.render();
     container[current_state]->render();
+
+	world.mWindow.display();
 }

@@ -140,8 +140,6 @@ bool World::goal_scored()
 
 void World::render()
 {
-    mWindow.clear();
-
     mWindow.draw(left_border);
     mWindow.draw(right_border);
     mWindow.draw(top_border);
@@ -151,8 +149,6 @@ void World::render()
     mWindow.draw(right.shape());
 
     board.render(mWindow);
-
-    mWindow.display();
 }
 
 

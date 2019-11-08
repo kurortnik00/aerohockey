@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 
+#include "../control/orbbec/astra/astra_wrapper.hpp"
 #include "../objects/world.hpp"
 #include "state.hpp"
 
@@ -9,7 +10,7 @@ using StateContainer = std::unordered_map<States::Type, State*>;
 
 struct StateManager
 {
-    StateManager(const States::Type& initial, World & world);
+    StateManager(const States::Type& initial, World & world, AstraWrapper& wrapper);
     ~StateManager();
 
     template <typename T>
@@ -23,5 +24,6 @@ struct StateManager
 private:
     States::Type current_state;
     StateContainer container;
+	AstraWrapper& astra_wrapper;
     World & world;
 };

@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="control\orbbec\astra\astra_wrapper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="objects\board.cpp" />
     <ClCompile Include="objects\paddle.cpp" />
@@ -145,6 +146,8 @@
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="control\orbbec\astra\astra_wrapper.hpp" />
+    <ClInclude Include="control\orbbec\astra\body_tracker.hpp" />
     <ClInclude Include="objects\board.hpp" />
     <ClInclude Include="objects\paddle.hpp" />
     <ClInclude Include="objects\player.hpp" />

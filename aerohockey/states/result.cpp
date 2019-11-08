@@ -4,11 +4,7 @@
 
 void StateResult::render()
 {
-    world.mWindow.clear();
-
     world.board.render(world.mWindow);
-
-    world.mWindow.display();
 }
 
 States::Type StateResult::switchTo()
