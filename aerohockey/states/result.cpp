@@ -6,6 +6,7 @@ void StateResult::render()
 {
     world.mWindow.clear();
 
+    world.mWindow.draw(world.background);
     world.board.render(world.mWindow);
 
     world.mWindow.display();

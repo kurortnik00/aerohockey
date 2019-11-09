@@ -21,6 +21,18 @@ World::World(float width, float height)
     mWindow.setFramerateLimit(60);
     mWindow.setVerticalSyncEnabled(true);
 
+    std::string path = getcwd_string() + "/media/textures/bg-space.jpg";
+    if (!bg_texture.loadFromFile(path))
+    {
+        std::cerr << "Failed to load texture: " << path << "\n";
+    }
+    else
+    {
+        background.setTexture(bg_texture);
+        background.setScale(width_ / background.getLocalBounds().width,
+                            height_ / background.getLocalBounds().height);
+    }
+
     left_border.setPosition(0.f, 0.f);
     left_border.setSize(sf::Vector2f(2.f, height_ - 60.f));
     left_border.setFillColor(sf::Color(204, 0, 0));
@@ -141,6 +153,8 @@ bool World::goal_scored()
 void World::render()
 {
     mWindow.clear();
+
+    mWindow.draw(background);
 
     mWindow.draw(left_border);
     mWindow.draw(right_border);

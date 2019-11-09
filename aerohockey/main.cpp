@@ -1,10 +1,10 @@
+#include <fstream>
 #include <iostream>
-#include <SFML/Main.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "objects/world.hpp"
 #include "states/state.hpp"
 #include "states/manager.hpp"
-
 
 int main()
 {

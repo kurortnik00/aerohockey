@@ -10,13 +10,14 @@ public:
     void update(int width, int height, float delta);
     void walls_collide(float width, float height);
     void reset(sf::Vector2f position, sf::Vector2f velocity);
-    sf::CircleShape shape();
+    sf::Sprite & shape();
     float radius();
     sf::Vector2f & position();
     sf::Vector2f & velocity();
 
 private:
-    sf::CircleShape shape_;
+    sf::Sprite sprite_;
+    sf::Texture texture_;
     float radius_;
     sf::Color color_;
     sf::Vector2f position_;

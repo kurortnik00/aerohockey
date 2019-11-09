@@ -1,4 +1,15 @@
+#include <unistd.h>
 #include "util.hpp"
+
+
+int PATH_MAX = 255;
+
+std::string getcwd_string() {
+   char buff[PATH_MAX];
+   getcwd(buff, PATH_MAX);
+   std::string cwd(buff);
+   return cwd;
+}
 
 
 float len2 (sf::Vector2f const v)

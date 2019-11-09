@@ -22,6 +22,8 @@ public:
     int width_, height_;
     bool score_changed, paused;
     sf::RenderWindow mWindow;
+    sf::Sprite background;
+    sf::Texture bg_texture;
     Puck puck;
     Paddle left, right;
     Scoreboard board;

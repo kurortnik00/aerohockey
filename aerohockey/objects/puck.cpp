@@ -2,29 +2,40 @@
 #include <SFML/Graphics.hpp>
 
 #include "puck.hpp"
+#include "../util.hpp"
 
 Puck::Puck (float radius, sf::Color color, sf::Vector2f position, sf::Vector2f velocity)
     : radius_ (radius), color_ (color), position_ (position), velocity_ (velocity)
 {
-    shape_.setRadius(radius_);
-    shape_.setFillColor(color_);
-    shape_.setOrigin(radius_, radius_);
-    shape_.setPosition(position_);
+    std::string path = getcwd_string() + "/media/textures/puck-space.png";
+    if (!texture_.loadFromFile(path))
+    {
+        std::cerr << "Failed to load texture: " << path << "\n";
+    }
+    else
+    {
+        sprite_.setTexture(texture_);
+        sprite_.setScale(2 * radius_ / sprite_.getLocalBounds().width,
+                         2 * radius_ / sprite_.getLocalBounds().height);
+    }
+
+    sprite_.setOrigin(radius_, radius_);
+    sprite_.setPosition(position_);
 }
 
 
 void Puck::moveTo (sf::Vector2f position)
 {
     position_ = position;
-    shape_.setPosition(position_);
+    sprite_.setPosition(position_);
 }
 
 void Puck::update (int width, int height, float delta)
 {
-    //std::cout << shape_.getPosition().x << " " << shape_.getPosition().y << "\n";
+    //std::cout << sprite_.getPosition().x << " " << sprite_.getPosition().y << "\n";
     //std::cout << delta << " " << velocity_.x * delta << " " << velocity_.y * delta << "\n";
     position_ += velocity_ * delta;
-    shape_.move(velocity_ * delta);
+    sprite_.move(velocity_ * delta);
     //std::cout << "Update (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
     //std::cout << "Update collide (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
 }
@@ -37,9 +48,9 @@ void Puck::reset(sf::Vector2f position, sf::Vector2f velocity)
 }
 
 
-sf::CircleShape Puck::shape()
+sf::Sprite & Puck::shape()
 {
-    return shape_;
+    return sprite_;
 }
 
 
@@ -76,7 +87,7 @@ void Puck::walls_collide (float width, float height)
         {
             position_.y = height - radius_ - 1.f;
         }
-        shape_.setPosition(position_);
+        sprite_.setPosition(position_);
         // std::cout << "After wall collide (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
     }
 }

@@ -22,6 +22,7 @@ void StatePreparation::render()
 {
     world.mWindow.clear();
 
+    world.mWindow.draw(world.background);
     world.mWindow.draw(world.left.shape());
     world.mWindow.draw(world.right.shape());
     world.mWindow.draw(world.left_ready.shape());
