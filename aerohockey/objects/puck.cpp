@@ -15,11 +15,11 @@ Puck::Puck (float radius, sf::Color color, sf::Vector2f position, sf::Vector2f v
     else
     {
         sprite_.setTexture(texture_);
-        sprite_.setScale(2 * radius_ / sprite_.getLocalBounds().width,
-                         2 * radius_ / sprite_.getLocalBounds().height);
+        sprite_.setOrigin(texture_.getSize().x / 2, texture_.getSize().y / 2);
+        sprite_.setScale(2 * radius_ / texture_.getSize().x,
+                         2 * radius_ / texture_.getSize().y);
     }
 
-    sprite_.setOrigin(radius_, radius_);
     sprite_.setPosition(position_);
 }
 
