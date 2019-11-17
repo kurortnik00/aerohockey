@@ -1,25 +1,27 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <vector>
+
+#include "../control/kinect/body_tracker.h"
+#include "paddle.hpp"
 
 struct Player
 {
 public:
-    Player(float radius, sf::Color color, sf::Vector2f position, float velocity);
+    Player(float radius, sf::Color color, float update_time, BodyTracker & kinect, bool left, bool kinectControl);
+    ~Player();
+    void handleInput();
     void update();
-    sf::CircleShape shape();
-    float radius();
-    sf::Vector2f & position();
-    sf::Vector2f & velocity();
+    std::vector<Paddle> & paddles();
     unsigned score();
     void scored();
     void reset();
+    int n_limbs;
 
 private:
-    sf::CircleShape shape_;
-    float radius_;
-    sf::Color color_;
+    bool left, kinectControl;
+    BodyTracker & kinect;
+    std::vector<Paddle> paddles_;
     unsigned score_;
-    sf::Vector2f position_;
-    sf::Vector2f velocity_;
 };

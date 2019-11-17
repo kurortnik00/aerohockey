@@ -10,7 +10,7 @@ void StateGame::processEvents()
 void StateGame::update(const float delta)
 {
     State::update(delta);
-    world.update(delta);
+    world.update();
 }
 
 void StateGame::render()

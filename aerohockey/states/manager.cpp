@@ -1,12 +1,15 @@
 #include <iostream>
 #include "manager.hpp"
 
-StateManager::StateManager(const States::Type& initial, World & world)
-    : current_state (initial), world (world)
+StateManager::StateManager(const States::Type& initial, World & world, BodyTracker & kinect, bool kinectControl)
+    : current_state (initial), world (world), kinect (kinect), kinectControl (kinectControl)
 {
     registerState<StatePreparation>(States::Type::Preparation, world);
     registerState<StateGame>(States::Type::Game, world);
     registerState<StateResult>(States::Type::Result, world);
+
+    // Initialize Kinect tracking
+    kinect.Run();
 }
 
 StateManager::~StateManager()
@@ -58,8 +61,12 @@ void StateManager::processEvents()
 void StateManager::update(const float delta)
 {
     State * current = container[current_state];
+    if (kinectControl)
+    {
+        kinect.Update(false);
+    }
     current->update(delta);
-    // current->log();
+    //current->log();
 
     States::Type next_state = current->switchTo();
     if (next_state != current_state)

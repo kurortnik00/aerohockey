@@ -1,22 +1,29 @@
 #include "paddle.hpp"
 
-#define SCALE_FACTOR 0.70711
+#define SCALE_FACTOR 0.70711f
 
-Paddle::Paddle (float radius, sf::Color color, sf::Vector2f position, float velocity,
+Paddle::Paddle()
+    : radius_(0), color_(sf::Color::Black), position_(sf::Vector2f(0.f, 0.f))
+    , velocity_(0.f), vx_(0), vy_(0)
+    , update_time (0.f)
+    , up_(sf::Keyboard::W), down_(sf::Keyboard::S), left_ (sf::Keyboard::A), right_ (sf::Keyboard::D)
+{
+
+}
+
+Paddle::Paddle (float radius, sf::Color color, sf::Vector2f position, float velocity, float update_time, 
                 sf::Keyboard::Key up, sf::Keyboard::Key down, sf::Keyboard::Key left, sf::Keyboard::Key right)
-      : radius_ (radius), color_ (color), position_ (position), score_ (0), velocity_ (velocity),
-        up_ (up), down_ (down), left_ (left), right_ (right)
+    : radius_ (radius), color_ (color), position_ (position)
+    , update_time (update_time)
+    , velocity_ (velocity), vx_ (0), vy_ (0)
+    , up_ (up), down_ (down), left_ (left), right_ (right)
 {
     current_velocity_ = sf::Vector2f(0.f, 0.f);
-    stop();
     shape_.setRadius(radius_);
     shape_.setFillColor(color_);
     shape_.setOrigin(radius_, radius_);
     shape_.setPosition(position_);
-
-//    kinectApplication.Run();
 }
-
 
 void Paddle::handleInput()
 {
@@ -43,36 +50,41 @@ void Paddle::handleInput()
         vx_ *= SCALE_FACTOR;
         vy_ *= SCALE_FACTOR;
     }
+
+    //LOG(INFO) << "Velocity: (" << vx_ << ", " << vy_ << ")";
 }
 
 
-void Paddle::stop()
+void Paddle::update (BodyTracker & kinect, const Limbs::Type type, bool left, bool kinectControl)
 {
-    vx_ = 0;
-    vy_ = 0;
+    if (kinectControl)
+    {
+        float z = kinect.getLimbDepthPoints(type, left);
+
+        sf::Vector2f position(0.f, 0.f), velocity(0.f, 0.f);
+        if (z > 1)
+        {
+            position = kinect.getLimbPointsXY(type, left);
+            velocity = kinect.getLimbVelocitiesXY(type, left);
+        }
+        position_ = position;
+        current_velocity_ = velocity;
+        shape_.setPosition(position);
+    }
+    else
+    {
+        current_velocity_.x = vx_;
+        current_velocity_.y = vy_;
+        shape_.move(current_velocity_ * update_time);
+        position_ = shape_.getPosition();
+    }
 }
 
-void Paddle::update (int width, int height, float delta)
+void Paddle::moveTo(sf::Vector2f position)
 {
-    current_velocity_.x = vx_;
-    current_velocity_.y = vy_;
-    shape_.move(current_velocity_ * delta);
-    position_ = shape_.getPosition();
-    stop();
-
-//    //kinect control
-//    sf::Vector2f HANDRIGHT_xy = sf::Vector2f((kinectApplication.SkeletPointsXY(HANDRIGHT).x + kinectApplication.SkeletPointsXY(WRISTRIGHT).x + kinectApplication.SkeletPointsXY(HANDTIPRIGHT).x + kinectApplication.SkeletPointsXY(THUMBRIGHT).x) / 4,
-//                (kinectApplication.SkeletPointsXY(HANDRIGHT).y + kinectApplication.SkeletPointsXY(WRISTRIGHT).y + kinectApplication.SkeletPointsXY(HANDTIPRIGHT).y + kinectApplication.SkeletPointsXY(THUMBRIGHT).y) / 4);
-//    float HANDRIGHT_z = (kinectApplication.DepthSkeletonPoints(HANDRIGHT) + kinectApplication.DepthSkeletonPoints(WRISTRIGHT) + kinectApplication.DepthSkeletonPoints(HANDTIPRIGHT) + kinectApplication.DepthSkeletonPoints(THUMBRIGHT) + kinectApplication.DepthSkeletonPoints(ELBOWRIGHT)) / 5;
-//
-//
-//    HANDRIGHT_xy.x = ((1920 - HANDRIGHT_xy.x * 1920 / 640) - 510)*4.9 / 2.4; //translate to pixel
-//    HANDRIGHT_xy.y = (HANDRIGHT_xy.y * 1200 / 280 - 430) * 4 / 1.4;//same
-//
-//    if (HANDRIGHT_z > 1) shape_.setPosition(HANDRIGHT_xy);
-//
+    position_ = position;
+    shape_.setPosition(position_);
 }
-
 
 sf::CircleShape Paddle::shape()
 {
@@ -95,19 +107,4 @@ sf::Vector2f & Paddle::position()
 sf::Vector2f & Paddle::velocity()
 {
     return current_velocity_;
-}
-
-unsigned Paddle::score()
-{
-    return score_;
-}
-
-void Paddle::scored()
-{
-    score_++;
-}
-
-void Paddle::reset()
-{
-    score_ = 0;
 }

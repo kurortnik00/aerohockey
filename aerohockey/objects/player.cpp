@@ -1,46 +1,62 @@
 #include <SFML/Graphics.hpp>
-//#include <Kinect.h>
 
+#include "../control/kinect/body_tracker.h"
 #include "player.hpp"
 
 
-Player::Player (float radius, sf::Color color, sf::Vector2f position, float velocity)
-      : radius_ (radius), color_ (color), position_ (position), velocity_ (sf::Vector2f(0.0, 0.0))
+Player::Player (float radius, sf::Color color, float update_time, BodyTracker & kinect, bool left, bool kinectControl)
+      : kinect (kinect), left (left), kinectControl (kinectControl), score_(0)
 {
-    shape_.setRadius(radius_);
-    shape_.setFillColor(color_);
-    shape_.setPosition(position_);
+    if (kinectControl)
+    {
+        n_limbs = 4;
+        for (int i = 0; i < n_limbs; i++)
+        {
+            paddles_.push_back(Paddle(radius, color, sf::Vector2f(0.f, 0.f), 0.f, 0.f,
+                                      sf::Keyboard::W, sf::Keyboard::S, sf::Keyboard::A, sf::Keyboard::D));
+        }
+    }
+    else
+    {
+        n_limbs = 1;
+        if (left)
+        {
+            paddles_.push_back(Paddle(radius, color, sf::Vector2f(0.f, 0.f), 800.f, update_time,
+                                      sf::Keyboard::W, sf::Keyboard::S, sf::Keyboard::A, sf::Keyboard::D));
+        }
+        else
+        {
+            paddles_.push_back(Paddle(radius, color, sf::Vector2f(0.f, 0.f), 800.f, update_time,
+                                      sf::Keyboard::Up, sf::Keyboard::Down, sf::Keyboard::Left, sf::Keyboard::Right));
+        }
+    }
 }
 
 
-void Player::update ()
+Player::~Player()
 {
-    shape_.move(velocity_);
-    position_ = shape_.getPosition();
+
 }
 
-
-sf::CircleShape Player::shape()
+void Player::handleInput()
 {
-    return shape_;
+    for (int i = 0; i < n_limbs; i++)
+    {
+        paddles_[i].handleInput();
+    }
 }
 
-
-float Player::radius()
+void Player::update()
 {
-    return radius_;
+    for (int i = 0; i < n_limbs; i++)
+    {
+        paddles_[i].update(kinect, static_cast<Limbs::Type>(i), left, kinectControl);
+    }
 }
 
-
-sf::Vector2f & Player::position()
+std::vector<Paddle> & Player::paddles()
 {
-    return position_;
-}
-
-
-sf::Vector2f & Player::velocity()
-{
-    return velocity_;
+    return paddles_;
 }
 
 unsigned Player::score()

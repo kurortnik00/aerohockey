@@ -1,12 +1,12 @@
 #pragma once
 
 #include <string>
-#include "paddle.hpp"
+#include "player.hpp"
 
 struct Scoreboard
 {
 public:
-    Scoreboard(Paddle * left, Paddle * right, float gameDuration);
+    Scoreboard(Player * left, Player * right, float gameDuration);
     void update(float delta, bool & score_changed);
     void render(sf::RenderWindow & window);
     void reset();
@@ -14,8 +14,8 @@ public:
 private:
     std::string time_line(float seconds);
     char t_[8];
-    Paddle * left_;
-    Paddle * right_;
+    Player * left_;
+    Player * right_;
     sf::RectangleShape left_score_border, right_score_border, main_border;
     float remainingTime_, gameDuration_;
     sf::Font font_;
