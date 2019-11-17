@@ -7,7 +7,7 @@ struct Puck
 public:
     Puck(float radius, sf::Color color, sf::Vector2f position, sf::Vector2f velocity);
     void moveTo(sf::Vector2f position);
-    void update(int width, int height, float delta);
+    void update(float delta);
     void walls_collide(float width, float height);
     void reset(sf::Vector2f position, sf::Vector2f velocity);
     sf::Sprite & shape();

@@ -1,5 +1,5 @@
-#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 #include "state.hpp"
 
@@ -12,19 +12,24 @@ void StatePreparation::update(const float delta)
 {
     State::update(delta);
 
-    world.left.update(world.width_, world.height_, delta);
-    world.right.update(world.width_, world.height_, delta);
-    world.left_ready.update(world.left);
-    world.right_ready.update(world.right);
+    world.left.update();
+    world.right.update();
+    world.left_ready.update(world.left.paddles());
+    world.right_ready.update(world.right.paddles());
 }
 
 void StatePreparation::render()
 {
     world.mWindow.clear();
 
-    world.mWindow.draw(world.background);
-    world.mWindow.draw(world.left.shape());
-    world.mWindow.draw(world.right.shape());
+    for (int i = 0; i < world.left.n_limbs; i++)
+    {
+        world.mWindow.draw(world.left.paddles()[i].shape());
+    }
+    for (int i = 0; i < world.right.n_limbs; i++)
+    {
+        world.mWindow.draw(world.right.paddles()[i].shape());
+    }
     world.mWindow.draw(world.left_ready.shape());
     world.mWindow.draw(world.right_ready.shape());
 

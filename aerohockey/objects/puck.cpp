@@ -1,5 +1,5 @@
-#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 #include "puck.hpp"
 #include "../util.hpp"
@@ -30,7 +30,7 @@ void Puck::moveTo (sf::Vector2f position)
     sprite_.setPosition(position_);
 }
 
-void Puck::update (int width, int height, float delta)
+void Puck::update (float delta)
 {
     //std::cout << sprite_.getPosition().x << " " << sprite_.getPosition().y << "\n";
     //std::cout << delta << " " << velocity_.x * delta << " " << velocity_.y * delta << "\n";

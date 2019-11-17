@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 
+#include "../control/kinect/body_tracker.h"
 #include "../objects/world.hpp"
 #include "state.hpp"
 
@@ -9,7 +10,7 @@ using StateContainer = std::unordered_map<States::Type, State*>;
 
 struct StateManager
 {
-    StateManager(const States::Type& initial, World & world);
+    StateManager(const States::Type& initial, World & world, BodyTracker & kinect, bool kinectControl);
     ~StateManager();
 
     template <typename T>
@@ -23,5 +24,7 @@ struct StateManager
 private:
     States::Type current_state;
     StateContainer container;
+    BodyTracker & kinect;
     World & world;
+    bool kinectControl;
 };

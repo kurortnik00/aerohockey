@@ -1,11 +1,13 @@
+#include <SFML/Graphics.hpp>
+
 #include <iostream>
 #include <string>
-#include <SFML/Graphics.hpp>
+
 #include "board.hpp"
 
 using namespace std;
 
-Scoreboard::Scoreboard(Paddle * left, Paddle * right, float gameDuration)
+Scoreboard::Scoreboard(Player * left, Player * right, float gameDuration)
     : left_ (left), right_ (right), gameDuration_ (gameDuration)
 {
     remainingTime_ = gameDuration_ * 60.f;

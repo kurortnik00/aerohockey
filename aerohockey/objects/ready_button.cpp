@@ -25,18 +25,23 @@ sf::RectangleShape ReadyButton::shape()
 }
 
 
-void ReadyButton::update(Paddle & paddle)
+void ReadyButton::update(std::vector<Paddle> paddles)
 {
-    sf::Vector2f paddle_position = paddle.position();
-    activated = (paddle_position.x >= position_.x - size_.x / 2) &&
-                (paddle_position.x <= position_.x + size_.x / 2) &&
-                (paddle_position.y >= position_.y - size_.y / 2) &&
-                (paddle_position.y <= position_.y + size_.y / 2);
+    activated = false;
+    for (int i = 0; i < paddles.size(); i++)
+    {
+        sf::Vector2f paddle_position = paddles[i].position();
+        activated |= (paddle_position.x >= position_.x - size_.x / 2) &&
+                     (paddle_position.x <= position_.x + size_.x / 2) &&
+                     (paddle_position.y >= position_.y - size_.y / 2) &&
+                     (paddle_position.y <= position_.y + size_.y / 2);
+    }
 
     if (activated)
     {
         shape_.setOutlineColor(sf::Color::Green);
-    } else {
+    }
+    else {
         shape_.setOutlineColor(sf::Color::Red);
     }
 }
