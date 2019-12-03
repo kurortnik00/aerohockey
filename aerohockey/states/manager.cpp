@@ -7,9 +7,6 @@ StateManager::StateManager(const States::Type& initial, World & world, BodyTrack
     registerState<StatePreparation>(States::Type::Preparation, world);
     registerState<StateGame>(States::Type::Game, world);
     registerState<StateResult>(States::Type::Result, world);
-
-    // Initialize Kinect tracking
-    kinect.Run();
 }
 
 StateManager::~StateManager()

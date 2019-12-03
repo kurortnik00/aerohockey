@@ -1,6 +1,3 @@
-#include <SFML/Graphics.hpp>
-
-#include "../control/kinect/body_tracker.h"
 #include "player.hpp"
 
 
