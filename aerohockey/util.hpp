@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-
+#include <iostream>
 
 std::string getcwd_string();
 float len2 (sf::Vector2f const v);
