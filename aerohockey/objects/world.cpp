@@ -14,10 +14,12 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
     , height_(height)
     , score_changed(false)
     , paused(false)
-    , use_paddle_velocity(false)
+    , use_paddle_velocity(true)
+	, use_velocity_cap(true)
     , kinectControl (kinectControl)
     , puck_velocity (sf::Vector2f(400.f, 400.f))
     , update_time (update_time)
+	, max_puck_velocity(800.f)
     , mWindow(sf::VideoMode(width, height), "Aerohockey", sf::Style::None)
     , puck (height / 20, sf::Color::White, sf::Vector2f(width / 2, height / 2), puck_velocity)
     , left (height / 20, sf::Color(204, 0, 0), update_time, kinect, true, kinectControl)
@@ -114,6 +116,19 @@ void World::collide_objects(Paddle & first, Puck & second)
 
         sf::Vector2f x1 = first.position(), x2 = second.position();
         second.velocity() = v2 - 2.f * (x2 - x1) * dot(v2 - v1, x2 - x1) / len2(x2 - x1);
+
+		if (use_velocity_cap)
+		{
+			float velocity_module = sqrt(len2(second.velocity()));
+			LOG(INFO) << velocity_module;
+			if (velocity_module > max_puck_velocity)
+			{
+				float scale = max_puck_velocity / velocity_module;
+				second.velocity() *= scale;
+				LOG(INFO) << "Scaled by " << scale << " - vx: " << second.velocity().x
+					<< ", vy: " << second.velocity().y;
+			}
+		}
 
         // first.update(width, height, rewind_time);
         second.update(rewind_time);
