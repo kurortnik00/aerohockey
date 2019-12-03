@@ -120,38 +120,6 @@ void World::collide_objects(Paddle & first, Puck & second)
     }
 }
 
-
-void World::collide_objects(Puck * first, Puck * second, int width, int height)
-{
-    float r1 = first->radius();
-    float r2 = second->radius();
-    float threshold = (r1 + r2) * (r1 + r2);
-    sf::Vector2f x1 = first->position(), x2 = second->position();
-
-    float dist = dist2(x1, x2);
-    if (dist <= threshold)
-    {
-        sf::Vector2f v1 = first->velocity(), v2 = second->velocity();
-
-        float rewind_time = 0.f;
-        if (dist < threshold)
-        {
-            sf::Vector2f dv = v1 - v2;
-            rewind_time = (r1 + r2 - sqrt(dist)) / sqrt(len2(dv));
-            std::cout << r1 + r2 << " " << sqrt(dist) << " " << dv.x << " " << dv.y << " " << rewind_time << "\n";
-            first->moveTo(x1 - rewind_time * v1);
-            second->moveTo(x2 - rewind_time * v2);
-        }
-
-        sf::Vector2f x1 = first->position(), x2 = second->position();
-        first->velocity() = v1 - (x1 - x2) * dot(v1 - v2, x1 - x2) / len2(x1 - x2);
-        second->velocity() = v2 - (x2 - x1) * dot(v2 - v1, x2 - x1) / len2(x2 - x1);
-
-        first->update(rewind_time);
-        second->update(rewind_time);
-    }
-}
-
 bool World::goal_scored()
 {
     sf::Vector2f velocity = puck_velocity;

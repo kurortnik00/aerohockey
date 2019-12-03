@@ -11,10 +11,13 @@ INITIALIZE_EASYLOGGINGPP
 
 int main()
 {
-    bool kinectControl = true;
-    sf::Time update_time = sf::seconds(1.f / 60.f);
+    sf::Time update_time = sf::seconds(1.f / 120.f);
 
+	// Initialize Kinect tracking
+	bool kinectControl = false;
     BodyTracker kinect;
+	kinect.Run();
+
     World world(1920.f, 1080.f, update_time.asSeconds(), kinect, kinectControl);
     StateManager manager(States::Type::Preparation, world, kinect, kinectControl);
 
@@ -33,6 +36,8 @@ int main()
         }
 
         manager.render();
+
+		sf::sleep(sf::microseconds(1));
     }
 
     return EXIT_SUCCESS;

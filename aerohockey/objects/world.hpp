@@ -13,7 +13,6 @@ public:
     World(float width, float height, float update_time, BodyTracker & kinect, bool kinectControl);
     void processEvents();
 
-    void collide_objects(Puck * first, Puck * second, int width, int height);
     void collide_objects(Paddle & first, Puck & second);
     void render();
     void reset();
