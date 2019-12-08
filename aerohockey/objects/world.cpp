@@ -166,7 +166,9 @@ void World::render()
     mWindow.draw(right_border);
     mWindow.draw(top_border);
 
-    mWindow.draw(puck.shape());
+    puck.render(mWindow);
+
+    // Draw paddles
     for (int i = 0; i < left.n_limbs; i++)
     {
         mWindow.draw(left.paddles()[i].shape());

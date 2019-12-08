@@ -18,7 +18,7 @@ int main()
     BodyTracker kinect;
 	kinect.Run();
 
-    World world(1920.f, 1080.f, update_time.asSeconds(), kinect, kinectControl);
+    World world(800.f, 600.f, update_time.asSeconds(), kinect, kinectControl);
     StateManager manager(States::Type::Preparation, world, kinect, kinectControl);
 
     sf::Clock clock;

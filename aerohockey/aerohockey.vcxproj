@@ -90,11 +90,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\aleks\Desktop\kolya\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\include;C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\interactive-boulder\SFML-2.5.1\include;C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\inc</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ELPP_FRESH_LOG_FILE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\aleks\Desktop\kolya\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\lib;C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\Lib\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\interactive-boulder\SFML-2.5.1\lib;C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\Lib\x64</AdditionalLibraryDirectories>
       <AdditionalDependencies>kinect20.lib;sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

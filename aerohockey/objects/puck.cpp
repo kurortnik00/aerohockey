@@ -6,7 +6,9 @@
 
 Puck::Puck (float radius, sf::Color color, sf::Vector2f position, sf::Vector2f velocity)
     : radius_ (radius), color_ (color), position_ (position), velocity_ (velocity)
-{
+    , current (0), capacity (20), trace_ (capacity)
+{    
+    // Load puck texture and set up sprite
     std::string path = getcwd_string() + "/media/textures/puck-space.png";
     if (!texture_.loadFromFile(path))
     {
@@ -34,12 +36,39 @@ void Puck::update (float delta)
 {
     //std::cout << sprite_.getPosition().x << " " << sprite_.getPosition().y << "\n";
     //std::cout << delta << " " << velocity_.x * delta << " " << velocity_.y * delta << "\n";
+    trace_[current] = position_;
+    current = (current + 1) % capacity;
+
     position_ += velocity_ * delta;
     sprite_.move(velocity_ * delta);
     //std::cout << "Update (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
     //std::cout << "Update collide (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
 }
 
+void Puck::render(sf::RenderWindow& window)
+{
+    float min_radius = 10.f, max_radius = radius_, current_radius = radius_;
+    float step = (max_radius - min_radius) / capacity;
+    for (int i = 0; i < capacity; i++)
+    {
+        current_radius -= step;
+
+        int trace_index = current - i - 1;
+        if (trace_index < 0)
+        {
+            trace_index = (trace_index + capacity) % capacity;
+        }
+
+        sf::CircleShape trace(current_radius);
+        trace.setOrigin(current_radius, current_radius);
+        trace.setPosition(trace_[trace_index]);
+        trace.setFillColor(sf::Color(243, 240, 240, 64));
+
+        window.draw(trace);
+    }
+
+    window.draw(sprite_);
+}
 
 void Puck::reset(sf::Vector2f position, sf::Vector2f velocity)
 {
