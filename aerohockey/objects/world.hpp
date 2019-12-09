@@ -1,7 +1,9 @@
 #pragma once
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "../control/kinect/body_tracker.h"
+#include "../easylogging/easylogging++.h"
 #include "board.hpp"
 #include "player.hpp"
 #include "puck.hpp"
@@ -25,6 +27,8 @@ public:
     sf::RenderWindow mWindow;
     sf::Sprite background;
     sf::Texture bg_texture;
+    sf::SoundBuffer scored, hit, wall;
+    sf::Sound scored_sound, hit_sound, wall_sound;
     sf::Vector2f puck_velocity;
     Puck puck;
     Player left, right;

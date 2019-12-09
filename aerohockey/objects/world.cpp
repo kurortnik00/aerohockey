@@ -31,10 +31,40 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
     mWindow.setFramerateLimit(60);
     mWindow.setVerticalSyncEnabled(true);
 
+    std::string scored_path = getcwd_string() + "/media/sounds/scored.wav";
+    if (!scored.loadFromFile(scored_path))
+    {
+        LOG(ERROR) << "Failed to load 'scored' sound: " << scored_path << "\n";
+    }
+    else
+    {
+        scored_sound.setBuffer(scored);
+    }
+
+    std::string hit_path = getcwd_string() + "/media/sounds/hit.wav";
+    if (!hit.loadFromFile(hit_path))
+    {
+        LOG(ERROR) << "Failed to load 'hit' sound: " << hit_path << "\n";
+    }
+    else
+    {
+        hit_sound.setBuffer(hit);
+    }
+
+    std::string wall_path = getcwd_string() + "/media/sounds/wall.wav";
+    if (!wall.loadFromFile(wall_path))
+    {
+        LOG(ERROR) << "Failed to load 'wall' sound: " << wall_path << "\n";
+    }
+    else
+    {
+        wall_sound.setBuffer(wall);
+    }
+
     std::string path = getcwd_string() + "/media/textures/bg-space.jpg";
     if (!bg_texture.loadFromFile(path))
     {
-        std::cerr << "Failed to load texture: " << path << "\n";
+        LOG(ERROR) << "Failed to load texture: " << path << "\n";
     }
     else
     {
@@ -44,16 +74,16 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
     }
 
     left_border.setPosition(0.f, 0.f);
-    left_border.setSize(sf::Vector2f(2.f, height_ - 60.f));
-    left_border.setFillColor(sf::Color(204, 0, 0));
+    left_border.setSize(sf::Vector2f(width_ / 2, height_));
+    left_border.setFillColor(sf::Color::Transparent);
+    left_border.setOutlineColor(sf::Color(242, 99, 80, 200));
+    left_border.setOutlineThickness(-10.f);
 
-    right_border.setPosition(798.f, 0.f);
-    right_border.setSize(sf::Vector2f(2.f, height_ - 60.f));
-    right_border.setFillColor(sf::Color(0, 102, 0));
-
-    left_border.setPosition(0.f, 0.f);
-    left_border.setSize(sf::Vector2f(800.f, 2.f));
-    left_border.setFillColor(sf::Color::White);
+    right_border.setPosition(width_ / 2, 0.f);
+    right_border.setSize(sf::Vector2f(width_ / 2, height_));
+    right_border.setOutlineColor(sf::Color(102, 214, 92, 200));
+    right_border.setFillColor(sf::Color::Transparent);
+    right_border.setOutlineThickness(-10.f);
 }
 
 
@@ -81,7 +111,7 @@ void World::update()
     {
         collide_objects(right.paddles()[i], puck);
     }
-    puck.walls_collide(width_, height_);
+    puck.walls_collide(width_, height_, wall_sound);
 
     score_changed = goal_scored();
     board.update(update_time, score_changed);
@@ -132,6 +162,7 @@ void World::collide_objects(Paddle & first, Puck & second)
 
         // first.update(width, height, rewind_time);
         second.update(rewind_time);
+        hit_sound.play();
     }
 }
 
@@ -151,6 +182,7 @@ bool World::goal_scored()
             left.scored();
         }
         puck.reset(sf::Vector2f(width_ / 2, height_ / 2), velocity);
+        scored_sound.play();
         return true;
     }
     return false;
@@ -164,19 +196,10 @@ void World::render()
 
     mWindow.draw(left_border);
     mWindow.draw(right_border);
-    mWindow.draw(top_border);
 
+    left.render(mWindow);
+    right.render(mWindow);
     puck.render(mWindow);
-
-    // Draw paddles
-    for (int i = 0; i < left.n_limbs; i++)
-    {
-        mWindow.draw(left.paddles()[i].shape());
-    }
-    for (int i = 0; i < right.n_limbs; i++)
-    {
-        mWindow.draw(right.paddles()[i].shape());
-    }
 
     board.render(mWindow);
 

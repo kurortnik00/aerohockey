@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
 struct Puck
@@ -10,7 +11,7 @@ public:
     void moveTo(sf::Vector2f position);
     void update(float delta);
     void render(sf::RenderWindow& window);
-    void walls_collide(float width, float height);
+    void walls_collide(float width, float height, sf::Sound & sound);
     void reset(sf::Vector2f position, sf::Vector2f velocity);
     sf::Sprite & shape();
     float radius();

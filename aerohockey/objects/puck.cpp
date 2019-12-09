@@ -34,15 +34,11 @@ void Puck::moveTo (sf::Vector2f position)
 
 void Puck::update (float delta)
 {
-    //std::cout << sprite_.getPosition().x << " " << sprite_.getPosition().y << "\n";
-    //std::cout << delta << " " << velocity_.x * delta << " " << velocity_.y * delta << "\n";
     trace_[current] = position_;
     current = (current + 1) % capacity;
 
     position_ += velocity_ * delta;
     sprite_.move(velocity_ * delta);
-    //std::cout << "Update (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
-    //std::cout << "Update collide (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
 }
 
 void Puck::render(sf::RenderWindow& window)
@@ -74,6 +70,7 @@ void Puck::reset(sf::Vector2f position, sf::Vector2f velocity)
 {
     moveTo(position);
     velocity_ = velocity;
+    trace_.assign(capacity, sf::Vector2f(0.f, 0.f));
 }
 
 
@@ -101,12 +98,10 @@ sf::Vector2f & Puck::velocity()
 }
 
 
-void Puck::walls_collide (float width, float height)
+void Puck::walls_collide (float width, float height, sf::Sound & sound)
 {
     if ((position_.y <= radius_) || (position_.y >= height - radius_))
     {
-        // std::cout << "\nCollide with wall (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
-
         velocity_.y *= -1;
         if (position_.y <= radius_)
         {
@@ -117,6 +112,6 @@ void Puck::walls_collide (float width, float height)
             position_.y = height - radius_ - 1.f;
         }
         sprite_.setPosition(position_);
-        // std::cout << "After wall collide (" << position_.x << ", " << position_.y << ") - (" << velocity_.x << ", " << velocity_.y << ")\n";
+        sound.play();
     }
 }

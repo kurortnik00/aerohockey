@@ -51,6 +51,14 @@ void Player::update()
     }
 }
 
+void Player::render(sf::RenderWindow& window)
+{
+    for (int i = 0; i < n_limbs; i++)
+    {
+        paddles_[i].render(window, left);
+    }
+}
+
 std::vector<Paddle> & Player::paddles()
 {
     return paddles_;
