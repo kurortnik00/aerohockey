@@ -34,10 +34,11 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
     std::string scored_path = getcwd_string() + "/media/sounds/scored.wav";
     if (!scored.loadFromFile(scored_path))
     {
-        LOG(ERROR) << "Failed to load 'scored' sound: " << scored_path << "\n";
+        LOG(ERROR) << "Failed to load 'scored' sound: " << scored_path;
     }
     else
     {
+        LOG(INFO) << "Successfully loaded 'scored' sound: " << scored_path;
         scored_sound.setBuffer(scored);
     }
 
@@ -48,6 +49,7 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
     }
     else
     {
+        LOG(INFO) << "Successfully loaded 'hit' sound: " << hit_path;
         hit_sound.setBuffer(hit);
     }
 
@@ -58,6 +60,7 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
     }
     else
     {
+        LOG(INFO) << "Successfully loaded 'wall' sound: " << wall_path;
         wall_sound.setBuffer(wall);
     }
 
@@ -68,6 +71,7 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
     }
     else
     {
+        LOG(INFO) << "Successfully loaded background texture: " << path;
         background.setTexture(bg_texture);
         background.setScale(width_ / background.getLocalBounds().width,
                             height_ / background.getLocalBounds().height);

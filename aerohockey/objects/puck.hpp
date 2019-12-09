@@ -4,6 +4,8 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "../easylogging/easylogging++.h"
+
 struct Puck
 {
 public:

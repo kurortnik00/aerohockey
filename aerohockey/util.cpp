@@ -9,12 +9,11 @@
 
 		if ((buffer = _getcwd(NULL, 0)) == NULL)
 		{
-			std::cout << "Failed to retrieve CWD, problems with texture loading may occur." << std::endl;
+			LOG(ERROR) << "Failed to retrieve CWD, problems with texture loading may occur.";
 			return "";
 		}
 		else
 		{
-			std::cout << "Current working directory: " << std::string(buffer);
 			return std::string(buffer);
 			free(buffer);
 		}

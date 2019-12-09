@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "easylogging/easylogging++.h"
 #include <iostream>
 
 std::string getcwd_string();

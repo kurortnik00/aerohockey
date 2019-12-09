@@ -11,6 +11,18 @@ INITIALIZE_EASYLOGGINGPP
 
 int main()
 {
+    // Configure logging
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+
+    defaultConf.setGlobally(el::ConfigurationType::Enabled, "true");
+    defaultConf.setGlobally(el::ConfigurationType::Filename, "game.log");
+    defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime [%level] - %msg");
+    defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
+    defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "true");
+
+    el::Loggers::reconfigureLogger("default", defaultConf);
+
     sf::Time update_time = sf::seconds(1.f / 120.f);
 
 	// Initialize Kinect tracking

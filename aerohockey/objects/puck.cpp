@@ -16,6 +16,7 @@ Puck::Puck (float radius, sf::Color color, sf::Vector2f position, sf::Vector2f v
     }
     else
     {
+        LOG(INFO) << "Successfully loaded puck texture: " << path;
         sprite_.setTexture(texture_);
         sprite_.setOrigin(texture_.getSize().x / 2, texture_.getSize().y / 2);
         sprite_.setScale(2 * radius_ / texture_.getSize().x,
