@@ -14,7 +14,7 @@ void StateResult::render()
 
 States::Type StateResult::switchTo()
 {
-    if (timeElapsed > 5.f)
+    if (timeElapsed > Config::result_demonstration_time)
     {
         return States::Type::Exiting;
     }

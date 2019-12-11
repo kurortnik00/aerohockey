@@ -15,13 +15,13 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
     , kinectControl (kinectControl)
     , puck_velocity (get_initial_velocity())
     , update_time (update_time)
-    , mWindow(sf::VideoMode(width, height), "Aerohockey", sf::Style::None)
+    , mWindow(sf::VideoMode(width, height), "Aerohockey", Config::window_mode)
     , puck (Config::puck_radius, sf::Color::White, sf::Vector2f(width / 2, height / 2), puck_velocity)
-    , left (height / 20, Config::red, update_time, kinect, true, kinectControl)
-    , right (height / 20, Config::green, update_time, kinect, false, kinectControl)
+    , left (Config::paddle_radius, Config::red, update_time, kinect, true, kinectControl)
+    , right (Config::paddle_radius, Config::green, update_time, kinect, false, kinectControl)
     , board (&left, &right, Config::game_length)
-    , left_ready (sf::Vector2f(width / 4, height / 2), sf::Vector2f(width / 10, width / 10))
-    , right_ready (sf::Vector2f(width * 3 / 4, height / 2), sf::Vector2f(width / 10, width / 10))
+    , left_ready (Config::left_ready_button_position, Config::left_ready_button_size)
+    , right_ready (Config::right_ready_button_position, Config::right_ready_button_size)
 {
     mWindow.setFramerateLimit(Config::fps);
     mWindow.setVerticalSyncEnabled(true);
@@ -212,6 +212,6 @@ void World::reset()
 {
     left.reset();
     right.reset();
-    puck.reset(sf::Vector2f(width_ / 2, height_ / 2), puck_velocity);
+    puck.reset(sf::Vector2f(width_ / 2, height_ / 2), get_initial_velocity());
     board.reset();
 }

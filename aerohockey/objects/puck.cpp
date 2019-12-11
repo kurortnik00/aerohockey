@@ -6,10 +6,10 @@
 
 Puck::Puck (float radius, sf::Color color, sf::Vector2f position, sf::Vector2f velocity)
     : radius_ (radius), color_ (color), position_ (position), velocity_ (velocity)
-    , current (0), capacity (20), trace_ (capacity)
+    , current (0), capacity (Config::trace_capacity), trace_ (capacity)
 {    
     // Load puck texture and set up sprite
-    std::string path = getcwd_string() + "/media/textures/puck-space.png";
+    std::string path = getcwd_string() + Config::texture_puck_path;
     if (!texture_.loadFromFile(path))
     {
         std::cerr << "Failed to load texture: " << path << "\n";
@@ -44,7 +44,7 @@ void Puck::update (float delta)
 
 void Puck::render(sf::RenderWindow& window)
 {
-    float min_radius = 10.f, max_radius = radius_, current_radius = radius_;
+    float min_radius = Config::trace_min_radius, max_radius = radius_, current_radius = radius_;
     float step = (max_radius - min_radius) / capacity;
     for (int i = 0; i < capacity; i++)
     {
@@ -59,7 +59,7 @@ void Puck::render(sf::RenderWindow& window)
         sf::CircleShape trace(current_radius);
         trace.setOrigin(current_radius, current_radius);
         trace.setPosition(trace_[trace_index]);
-        trace.setFillColor(sf::Color(243, 240, 240, 64));
+        trace.setFillColor(Config::trace_color);
 
         window.draw(trace);
     }

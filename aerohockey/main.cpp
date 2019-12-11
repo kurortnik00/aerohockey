@@ -49,6 +49,7 @@ int main()
 
         manager.render();
 
+        // Avoid infinite FPS
 		sf::sleep(sf::microseconds(1));
     }
 

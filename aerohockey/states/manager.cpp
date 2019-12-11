@@ -48,7 +48,6 @@ void StateManager::update(const float delta)
         kinect.Update(false);
     }
     current->update(delta);
-    //current->log();
 
     States::Type next_state = current->switchTo();
     if (next_state != current_state)

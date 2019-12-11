@@ -54,10 +54,10 @@ sf::Vector2f get_initial_velocity()
 	int angle = std::rand() % 360;
 
 	// Avoid too vertical directions
-	if (((angle > 75) && (angle < 105)) || ((angle > 255) && (angle < 285)))
+	if (((angle > 45) && (angle < 135)) || ((angle > 225) && (angle < 315)))
 	{
 		angle = (angle + 90) % 360;
 	}
-
+	
 	return sf::Vector2f(cos(angle), sin(angle)) * Config::initial_puck_velocity;
 }

@@ -15,6 +15,7 @@ public:
 
 private:
     std::string time_line(float seconds);
+    void align_center(sf::Text& text, sf::RectangleShape& border);
     char t_[8];
     Player * left_;
     Player * right_;

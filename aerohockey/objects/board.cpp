@@ -24,38 +24,36 @@ Scoreboard::Scoreboard(Player * left, Player * right, float gameDuration)
         right_score.setFont(font_);
     }
 
-    float x = 120.f, y = 60.f;
-
-    left_score_border.setPosition(Config::screen_width / 2 - x / 2 - y, Config::screen_height - 60.f);
-    left_score_border.setSize(sf::Vector2f(y, 60.f));
+    left_score_border.setPosition(Config::screen_width / 2 - Config::timer_width / 2 - Config::score_width, 
+        Config::screen_height - Config::board_height);
+    left_score_border.setSize(sf::Vector2f(Config::score_width, Config::board_height));
     left_score_border.setFillColor(Config::red);
     left_score_border.setOutlineColor(sf::Color::White);
     left_score_border.setOutlineThickness(-2.f);
 
-    right_score_border.setPosition(Config::screen_width / 2 + x / 2, Config::screen_height - 60.f);
-    right_score_border.setSize(sf::Vector2f(y, 60.f));
+    right_score_border.setPosition(Config::screen_width / 2 + Config::timer_width / 2, 
+        Config::screen_height - Config::board_height);
+    right_score_border.setSize(sf::Vector2f(Config::score_width, Config::board_height));
     right_score_border.setFillColor(Config::green);
     right_score_border.setOutlineColor(sf::Color::White);
     right_score_border.setOutlineThickness(-2.f);
 
-    time_border.setPosition(Config::screen_width / 2 - x / 2, Config::screen_height - 60.f);
-    time_border.setSize(sf::Vector2f(x, 60.f));
+    time_border.setPosition(Config::screen_width / 2 - Config::timer_width / 2, 
+        Config::screen_height - Config::board_height);
+    time_border.setSize(sf::Vector2f(Config::timer_width, Config::board_height));
     time_border.setFillColor(sf::Color::Transparent);
     time_border.setOutlineColor(sf::Color::White);
     time_border.setOutlineThickness(-2.f);
     
-    left_score.setCharacterSize(40);
-    left_score.setPosition(300.f, 545.f);
+    left_score.setCharacterSize(Config::font_size);
     left_score.setFillColor(sf::Color::White);
     left_score.setString(to_string(left_->score()));
 
-    timer_.setCharacterSize(40);
-    timer_.setPosition(342.f, 545.f);
+    timer_.setCharacterSize(Config::font_size);
     timer_.setFillColor(sf::Color::White);
     timer_.setString(time_line(remainingTime_));
 
-    right_score.setCharacterSize(40);
-    right_score.setPosition(480.f, 545.f);
+    right_score.setCharacterSize(Config::font_size);
     right_score.setFillColor(sf::Color::White);
     right_score.setString(to_string(right_->score()));
 }
@@ -69,7 +67,14 @@ string Scoreboard::time_line(float seconds)
     return t_;
 }
 
-void Scoreboard::update(float delta, bool & score_changed)
+void Scoreboard::align_center(sf::Text& text, sf::RectangleShape& border)
+{
+    text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+    text.setPosition(border.getPosition().x + border.getSize().x / 2, 
+        border.getPosition().y + border.getSize().y / 2);
+}
+
+void Scoreboard::update(float delta, bool& score_changed)
 {
     if (score_changed)
     {
@@ -77,8 +82,14 @@ void Scoreboard::update(float delta, bool & score_changed)
         right_score.setString(to_string(right_->score()));
         score_changed = false;
     }
+
     remainingTime_ -= delta;
     timer_.setString(time_line(remainingTime_));
+
+    // Align text to be in the center of the corresponding cells
+    align_center(left_score, left_score_border);
+    align_center(timer_, time_border);
+    align_center(right_score, right_score_border);
 }
 
 void Scoreboard::render(sf::RenderWindow & window)
