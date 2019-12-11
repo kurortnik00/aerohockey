@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "config/config.hpp"
 #include "easylogging/easylogging++.h"
 #include "objects/world.hpp"
 #include "states/state.hpp"
@@ -23,19 +24,18 @@ int main()
 
     el::Loggers::reconfigureLogger("default", defaultConf);
 
-    sf::Time update_time = sf::seconds(1.f / 120.f);
+    sf::Time update_time = sf::seconds(1.f / Config::fps);
 
 	// Initialize Kinect tracking
-	bool kinectControl = false;
     BodyTracker kinect;
 	kinect.Run();
 
-    World world(800.f, 600.f, update_time.asSeconds(), kinect, kinectControl);
-    StateManager manager(States::Type::Preparation, world, kinect, kinectControl);
+    World world(Config::screen_width, Config::screen_height, update_time.asSeconds(), kinect, Config::kinectControl);
+    StateManager manager(States::Type::Preparation, world, kinect, Config::kinectControl);
 
     sf::Clock clock;
     sf::Time elapsed = sf::Time::Zero;
-    while (world.mWindow.isOpen())
+    while ((world.mWindow.isOpen()) && (manager.getCurrentState() != States::Type::Exiting))
     {
         manager.processEvents();
         elapsed += clock.restart();

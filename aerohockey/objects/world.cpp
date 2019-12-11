@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "world.hpp"
-#include "../util.hpp"
 
 using namespace std;
 
@@ -13,25 +12,21 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
     : width_(width)
     , height_(height)
     , score_changed(false)
-    , paused(false)
-    , use_paddle_velocity(true)
-	, use_velocity_cap(true)
     , kinectControl (kinectControl)
-    , puck_velocity (sf::Vector2f(400.f, 400.f))
+    , puck_velocity (get_initial_velocity())
     , update_time (update_time)
-	, max_puck_velocity(800.f)
     , mWindow(sf::VideoMode(width, height), "Aerohockey", sf::Style::None)
-    , puck (height / 20, sf::Color::White, sf::Vector2f(width / 2, height / 2), puck_velocity)
-    , left (height / 20, sf::Color(204, 0, 0), update_time, kinect, true, kinectControl)
-    , right (height / 20, sf::Color(0, 102, 0), update_time, kinect, false, kinectControl)
-    , board (&left, &right, 0.5)
+    , puck (Config::puck_radius, sf::Color::White, sf::Vector2f(width / 2, height / 2), puck_velocity)
+    , left (height / 20, Config::red, update_time, kinect, true, kinectControl)
+    , right (height / 20, Config::green, update_time, kinect, false, kinectControl)
+    , board (&left, &right, Config::game_length)
     , left_ready (sf::Vector2f(width / 4, height / 2), sf::Vector2f(width / 10, width / 10))
     , right_ready (sf::Vector2f(width * 3 / 4, height / 2), sf::Vector2f(width / 10, width / 10))
 {
-    mWindow.setFramerateLimit(60);
+    mWindow.setFramerateLimit(Config::fps);
     mWindow.setVerticalSyncEnabled(true);
 
-    std::string scored_path = getcwd_string() + "/media/sounds/scored.wav";
+    std::string scored_path = getcwd_string() + Config::sound_scored_path;
     if (!scored.loadFromFile(scored_path))
     {
         LOG(ERROR) << "Failed to load 'scored' sound: " << scored_path;
@@ -42,7 +37,7 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
         scored_sound.setBuffer(scored);
     }
 
-    std::string hit_path = getcwd_string() + "/media/sounds/hit.wav";
+    std::string hit_path = getcwd_string() + Config::sound_hit_path;
     if (!hit.loadFromFile(hit_path))
     {
         LOG(ERROR) << "Failed to load 'hit' sound: " << hit_path << "\n";
@@ -53,7 +48,7 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
         hit_sound.setBuffer(hit);
     }
 
-    std::string wall_path = getcwd_string() + "/media/sounds/wall.wav";
+    std::string wall_path = getcwd_string() + Config::sound_wall_path;
     if (!wall.loadFromFile(wall_path))
     {
         LOG(ERROR) << "Failed to load 'wall' sound: " << wall_path << "\n";
@@ -64,7 +59,7 @@ World::World(float width, float height, float update_time, BodyTracker & kinect,
         wall_sound.setBuffer(wall);
     }
 
-    std::string path = getcwd_string() + "/media/textures/bg-space.jpg";
+    std::string path = getcwd_string() + Config::texture_background_path;
     if (!bg_texture.loadFromFile(path))
     {
         LOG(ERROR) << "Failed to load texture: " << path << "\n";
@@ -133,7 +128,7 @@ void World::collide_objects(Paddle & first, Puck & second)
     if (dist2(x1, x2) <= threshold)
     {
         sf::Vector2f v1 = sf::Vector2f(0.f, 0.f), v2 = second.velocity();
-        if (use_paddle_velocity)
+        if (Config::use_paddle_velocity)
         {
             v1 = first.velocity();
         }
@@ -151,20 +146,16 @@ void World::collide_objects(Paddle & first, Puck & second)
         sf::Vector2f x1 = first.position(), x2 = second.position();
         second.velocity() = v2 - 2.f * (x2 - x1) * dot(v2 - v1, x2 - x1) / len2(x2 - x1);
 
-		if (use_velocity_cap)
+		if (Config::use_velocity_cap)
 		{
 			float velocity_module = sqrt(len2(second.velocity()));
-			LOG(INFO) << velocity_module;
-			if (velocity_module > max_puck_velocity)
+			if (velocity_module > Config::max_puck_velocity)
 			{
-				float scale = max_puck_velocity / velocity_module;
+				float scale = Config::max_puck_velocity / velocity_module;
 				second.velocity() *= scale;
-				LOG(INFO) << "Scaled by " << scale << " - vx: " << second.velocity().x
-					<< ", vy: " << second.velocity().y;
 			}
 		}
 
-        // first.update(width, height, rewind_time);
         second.update(rewind_time);
         hit_sound.play();
     }
@@ -172,18 +163,24 @@ void World::collide_objects(Paddle & first, Puck & second)
 
 bool World::goal_scored()
 {
-    sf::Vector2f velocity = puck_velocity;
+    // Get random velocity for puck reset
+    sf::Vector2f velocity = get_initial_velocity();
 
     if ((puck.position().x < 0) || (puck.position().x > width_))
     {
         if (puck.position().x < 0)
         {
             right.scored();
-            velocity.x *= -1;
+
+            // Right has scored -> puck goes left -> vx should be negative
+            velocity.x = -1.f * abs(velocity.x);
         }
         else
         {
             left.scored();
+
+            // Left has scored -> puck goes right -> vx should be positive
+            velocity.x = abs(velocity.x);
         }
         puck.reset(sf::Vector2f(width_ / 2, height_ / 2), velocity);
         scored_sound.play();

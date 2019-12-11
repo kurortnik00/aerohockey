@@ -2,6 +2,8 @@
 
 #include <string>
 #include "player.hpp"
+#include "../config/config.hpp"
+#include "../util.hpp"
 
 struct Scoreboard
 {
@@ -16,8 +18,8 @@ private:
     char t_[8];
     Player * left_;
     Player * right_;
-    sf::RectangleShape left_score_border, right_score_border, main_border;
+    sf::RectangleShape left_score_border, right_score_border, time_border;
     float remainingTime_, gameDuration_;
     sf::Font font_;
-    sf::Text timer_, left_score, right_score, left_name, right_name;
+    sf::Text timer_, left_score, right_score;
 };

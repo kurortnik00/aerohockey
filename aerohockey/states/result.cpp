@@ -16,7 +16,7 @@ States::Type StateResult::switchTo()
 {
     if (timeElapsed > 5.f)
     {
-        return States::Type::Preparation;
+        return States::Type::Exiting;
     }
     return States::Type::Result;
 }

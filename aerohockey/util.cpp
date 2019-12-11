@@ -1,3 +1,5 @@
+#include <cstdlib>
+#include <cmath>
 #include "util.hpp"
 
 #define RUNNING_WINDOWS
@@ -45,4 +47,17 @@ float dot (sf::Vector2f const v1, sf::Vector2f const v2)
 float dist2 (sf::Vector2f const & p1, sf::Vector2f const & p2)
 {
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
+}
+
+sf::Vector2f get_initial_velocity()
+{
+	int angle = std::rand() % 360;
+
+	// Avoid too vertical directions
+	if (((angle > 75) && (angle < 105)) || ((angle > 255) && (angle < 285)))
+	{
+		angle = (angle + 90) % 360;
+	}
+
+	return sf::Vector2f(cos(angle), sin(angle)) * Config::initial_puck_velocity;
 }

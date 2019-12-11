@@ -2,8 +2,10 @@
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include "../config/config.hpp"
 #include "../control/kinect/body_tracker.h"
 #include "../easylogging/easylogging++.h"
+#include "../util.hpp"
 #include "board.hpp"
 #include "player.hpp"
 #include "puck.hpp"
@@ -22,8 +24,8 @@ public:
     void update();
 
     int width_, height_;
-	float update_time, max_puck_velocity;
-    bool score_changed, paused, kinectControl, use_paddle_velocity, use_velocity_cap;
+	float update_time;
+    bool score_changed, kinectControl;
     sf::RenderWindow mWindow;
     sf::Sprite background;
     sf::Texture bg_texture;
